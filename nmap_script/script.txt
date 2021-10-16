@@ -1,0 +1,40 @@
+function prepare-oscp-recon-directory(){
+        directory_root="/mnt/hgfs/OSCP"
+        
+        box_name=$1
+
+        # Checking whether box_name is entered or not
+        if [ -z "$box_name" ]
+        then
+                echo "Please Enter a valid box name"
+                return 1
+        else
+                # Checking if the directory already exists or not
+                if [ ! -d "$directory_root/$box_name" ]
+                then
+                        mkdir $directory_root/$box_name
+                        cd $directory_root/$box_name
+                        mkdir nmap 
+                else
+                        cd $directory_root/$box_name
+                fi
+
+                target=$2
+
+                # Checking if the IP entered is in correct IPv4 format
+                if [[ $target =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]  # RegExp for IPv4
+                then
+                        echo "Starting Full port scan for "$target" ..."
+                        echo "Fetching all active ports ..."
+                        nmap -p- -Pn --min-rate=1000 -vvv $target | tee ./nmap/verbose-output.txt
+                        ports=$(cat ./nmap/verbose-output.txt | grep ^[0-9] | cut -d '/' -f1 | tr '\n' ',' | sed s/,$//)
+                        echo "Starting NMAP scan on ports: "$ports
+                        nmap -A -Pn -p$ports $target >> ./nmap/$box_name-full-ports
+                        clear
+                        cat ./nmap/$box_name-full-ports
+                else
+                                        echo "Invalid IPv4 address format"
+                        return 1
+                fi
+        fi
+}
