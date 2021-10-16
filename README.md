@@ -4,7 +4,11 @@ This repository contains the nmap script, buffer overflow scripts and CherryTree
 OSCP exam.
 
 
-## Nmap script usage:
+## Nmap script:
+
+**Credits:** [@masquerad3r](https://www.linkedin.com/in/masquerad3r/) 
+
+Usage:
 
 1. Append the contents of nmap_script/script.txt into your ~/.bashrc or ~/.zshrc file. 
 2. Source the file:
